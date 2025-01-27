@@ -169,3 +169,5 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+data_OLMo2_13b_1124/
+tiny_dolma/
