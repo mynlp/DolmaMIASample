@@ -23,7 +23,7 @@ def filter_data(data, min_length, max_length, args, domain):
             lengths = [len(text) for text in texts]
         else:
             lengths = [len(text.split()) for text in texts]
-        pdb.set_trace()
+        #pdb.set_trace()
         if args.select_method == "nontruncate":
             valid_indices = (np.array(lengths) >= min_length) & (np.array(lengths) <= max_length)
             filtered_data.extend([batch[j] for j in range(len(batch)) if valid_indices[j]])
