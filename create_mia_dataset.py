@@ -45,7 +45,6 @@ def load_and_filter_npy_data(dataset, min_length, max_length, args, domain):
     merged_data = []
     return merged_data
 
-
 def load_text_dataset(filename, directory="saved_datasets"):
     file_path = os.path.join(directory, f"{filename}.pt")
     text_dataset = torch.load(file_path)
@@ -66,8 +65,8 @@ args = parser.parse_args()
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
 seed_list = [10345, 19238, 19093]
 #I will directly corpy "pile arxiv"
-#data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2"]
-data_list = [""]
+#data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
+data_list = ["algebraic-stack"]
 length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
 sample_num = 1000
