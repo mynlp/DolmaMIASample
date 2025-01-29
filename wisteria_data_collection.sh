@@ -4,9 +4,9 @@
 #PJM -L elapse=12:00:00
 #PJM -g gk77
 #PJM -j
-#PJM -N dcpdd160mbrt
-#PJM -o dcpdd160mbrt
-#PJM -e dcpdd160mbrt
+#PJM -N data_collection
+#PJM -o data_collection
+#PJM -e data_collection
 
 if [ -z "$RUN_ON_REMOTE" ]; then
     source /work/gk77/k77025/.zshrc
