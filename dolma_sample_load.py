@@ -58,7 +58,7 @@ if __name__ == "__main__":
         "common_crawl_valid.npy", "ice_valid.npy", "pes2o_valid.npy",
         "reddit_valid.npy", "wiki_valid.npy"
     ]
-    root_file = "data_OLMo2_13b_1124/eval_data/"
+    root_file = "data_OLMo2_13b_1124/eval_data/raw_data/"
 
     tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
     seq_len_list = [100, 200, 300, 400, 500, 600, 700, 800, 900]
