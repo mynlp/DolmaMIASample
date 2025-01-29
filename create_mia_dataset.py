@@ -14,6 +14,8 @@ def filter_data(data, min_length, max_length, args, domain):
     filtered_data = []
     if domain == "code search net":
         key = "func_code_tokens"
+    elif domain in ["algebraic-stack", "open-web-math", "arxiv"]:
+        key = "text"
     for i in tqdm(range(0, len(data[key]), args.batch_size)):
         batch = data[key][i:i + args.batch_size]
         texts = [item for item in batch]
@@ -21,7 +23,6 @@ def filter_data(data, min_length, max_length, args, domain):
             lengths = [len(text) for text in texts]
         else:
             lengths = [len(text.split()) for text in texts]
-
         if args.select_method == "nontruncate":
             valid_indices = (np.array(lengths) >= min_length) & (np.array(lengths) <= max_length)
             filtered_data.extend([batch[j] for j in range(len(batch)) if valid_indices[j]])
@@ -29,8 +30,6 @@ def filter_data(data, min_length, max_length, args, domain):
             valid_indices = (np.array(lengths) >= min_length)
             filtered_data.extend([" ".join(batch[j].split()[:max_length]) for j in range(len(batch)) if valid_indices[j]])
     return filtered_data
-
-
 
 def load_and_filter_data(dataset, min_length, max_length, args, domain):
     """filtering and load"""
@@ -68,9 +67,10 @@ tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
 seed_list = [10345, 19238, 19093]
 #I will directly corpy "pile arxiv"
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2"]
-data_list = ["code search net"]
+data_list = [""]
 length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
+sample_num = 1000
 for idx, seed in enumerate(seed_list):
     for domain in data_list:
         if domain == "code search net":
@@ -88,6 +88,9 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
+            train_sampled = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
+            test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
             non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
         elif domain == "arxiv":
@@ -95,6 +98,9 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
+            train_sampled = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
+            test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
             non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
         elif domain == "open-web-math":
@@ -102,6 +108,9 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
+            train_sampled = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
+            test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
             non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
         for i in range(enumerate_length):
