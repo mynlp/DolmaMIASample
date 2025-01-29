@@ -85,8 +85,8 @@ for idx, seed in enumerate(seed_list):
                 'member': train_dataset,
                 'nonmember': test_dataset_short,
             })
-            os.makedirs(f"./absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}",
+            os.makedirs(f"./dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}",
                         exist_ok=True)
             dataset.save_to_disk(
-                f"./absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}")
+                f"./dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}")
 
