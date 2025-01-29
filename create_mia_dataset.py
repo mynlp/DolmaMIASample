@@ -15,7 +15,7 @@ def filter_data(data, min_length, max_length, args, domain):
     if domain == "code search net":
         key = "func_code_tokens"
     for i in tqdm(range(0, len(data[key]), args.batch_size)):
-        batch = data[i:i + args.batch_size]
+        batch = data[key][i:i + args.batch_size]
         texts = [item for item in batch]
         if domain == "code search net":
             lengths = [len(text) for text in texts]
@@ -41,8 +41,17 @@ def load_and_filter_data(dataset, min_length, max_length, args, domain):
         return random.sample(merged_data, args.sample_size)
     return merged_data
 
+def load_and_filter_npy_data(dataset, min_length, max_length, args, domain):
+    """filtering and load"""
+    merged_data = []
+    return merged_data
 
 
+def load_text_dataset(filename, directory="saved_datasets"):
+    file_path = os.path.join(directory, f"{filename}.pt")
+    text_dataset = torch.load(file_path)
+    print(f"Loaded dataset from {file_path}")
+    return text_dataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--list", type=int, default=1)
@@ -68,6 +77,8 @@ for idx, seed in enumerate(seed_list):
             test_dataset = dataset["test"]
             #merge valid and test
             non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+        elif domain == "dolma wiki":
+            pass
         for i in range(enumerate_length):
             print (f"Processing {domain} with length {length_list[i]}")
             if length_list[i] == 0:
