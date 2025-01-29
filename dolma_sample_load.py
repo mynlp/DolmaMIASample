@@ -73,6 +73,7 @@ if __name__ == "__main__":
         for step, batch_token_ids in enumerate(dataloader):
             text = tokenizer.decode(batch_token_ids[0].tolist(), skip_special_tokens=True)
             samples.append(text)
+        print(f"Number of samples for seq_len {seq_len}: {len(samples)}")
         results[seq_len] = samples
         text_dataset = TextDataset(samples)
         dataset_dict[seq_len] = text_dataset
