@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer
 import pdb
+import os
 
 class MemmapTokenDataset(Dataset):
     def __init__(self, file_path, seq_len=128, dtype="uint32"):
@@ -26,6 +27,29 @@ class MemmapTokenDataset(Dataset):
 def collate_fn(batch):
     return torch.stack(batch, dim=0)
 
+class TextDataset(Dataset):
+    def __init__(self, texts):
+        self.texts = texts
+
+    def __len__(self):
+        return len(self.texts)
+
+    def __getitem__(self, idx):
+        return self.texts[idx]
+
+def save_text_dataset(text_dataset, seq_len, directory="saved_datasets"):
+    os.makedirs(directory, exist_ok=True)
+    file_path = os.path.join(directory, f"text_dataset_seq_len_{seq_len}.pt")
+    torch.save(text_dataset, file_path)
+    print(f"Saved dataset to {file_path}")
+
+def load_text_dataset(seq_len, directory="saved_datasets"):
+    file_path = os.path.join(directory, f"text_dataset_seq_len_{seq_len}.pt")
+    text_dataset = torch.load(file_path)
+    print(f"Loaded dataset from {file_path}")
+    return text_dataset
+
+
 
 if __name__ == "__main__":
     file_path = "data_OLMo2_13b_1124/eval_data/c4_en_valid.npy"
@@ -35,7 +59,7 @@ if __name__ == "__main__":
 
     # Dictionary to store results
     results = {}
-
+    dataset_dict = {}
     for seq_len in seq_len_list:
         dataset = MemmapTokenDataset(file_path=file_path, seq_len=seq_len, dtype="uint32")
         dataloader = DataLoader(
@@ -45,11 +69,13 @@ if __name__ == "__main__":
             num_workers=0,
             collate_fn=collate_fn
         )
-
         samples = []
         for step, batch_token_ids in enumerate(dataloader):
             text = tokenizer.decode(batch_token_ids[0].tolist(), skip_special_tokens=True)
             samples.append(text)
         results[seq_len] = samples
-        pdb.set_trace()
+        text_dataset = TextDataset(samples)
+        dataset_dict[seq_len] = text_dataset
+        save_text_dataset(text_dataset, seq_len, directory="data_OLMo2_13b_1124/eval_data/processed_data")
+
 
