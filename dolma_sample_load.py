@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
+from transformers import AutoTokenizer
 
 class MemmapTokenDataset(Dataset):
     def __init__(self, file_path, seq_len=128, dtype="uint32"):
@@ -40,6 +41,7 @@ if __name__ == "__main__":
                  "pes2o_valid.npy", "reddit_valid.npy", "wiki_valid.npy"]
     root_file = "data_OLMo2_13b_1124/eval_data/"
     file_path = root_file + file_list[0]
+    tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
     dataset = MemmapTokenDataset(file_path=file_path, seq_len=128, dtype="uint32")
     dataloader = DataLoader(
         dataset=dataset,
@@ -54,3 +56,4 @@ if __name__ == "__main__":
         # 做一些处理...
         if step >= 1:
             break
+        print(tokenizer.decode(batch_token_ids[0].tolist()))
