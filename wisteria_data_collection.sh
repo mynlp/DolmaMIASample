@@ -12,4 +12,5 @@ if [ -z "$RUN_ON_REMOTE" ]; then
     source /work/gk77/k77025/.zshrc
 fi
 
-python dolma_sample_load.py
+#python dolma_sample_load.py
+python tes.py

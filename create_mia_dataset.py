@@ -84,6 +84,7 @@ for idx, seed in enumerate(seed_list):
             member_dataset = load_text_dataset( f"wiki_train_seq_len_100", f"data_OLMo2_13b_1124/train_data/processed_data")
             non_member_dataset = load_text_dataset( f"wiki_valid_seq_len_200", f"data_OLMo2_13b_1124/eval_data/processed_data")
         elif domain == "m2d2":
+
         for i in range(enumerate_length):
             print (f"Processing {domain} with length {length_list[i]}")
             if length_list[i] == 0:
