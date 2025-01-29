@@ -98,7 +98,7 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            train_sampled = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
             test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
@@ -108,7 +108,7 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            train_sampled = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
             test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
