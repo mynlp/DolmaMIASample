@@ -17,4 +17,4 @@ batch_size = 32
 
 # Use the batched_data function to iterate over the dataset in batches
 for batch in batched_data(dataset, batch_size):
-    print(batch)
+     [x["text"] for x in batch]
