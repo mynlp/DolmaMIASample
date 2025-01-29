@@ -83,8 +83,27 @@ for idx, seed in enumerate(seed_list):
         elif domain == "dolma wiki":
             member_dataset = load_text_dataset( f"wiki_train_seq_len_100", f"data_OLMo2_13b_1124/train_data/processed_data")
             non_member_dataset = load_text_dataset( f"wiki_valid_seq_len_200", f"data_OLMo2_13b_1124/eval_data/processed_data")
-        elif domain == "m2d2":
-
+        elif domain == "algebraic-stack":
+            dataset = load_dataset("EleutherAI/proof-pile-2", "algerbraic-stack")
+            member_dataset = dataset["train"]
+            valid_dataset = dataset["validation"]
+            test_dataset = dataset["test"]
+            #merge valid and test
+            non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+        elif domain == "arxiv":
+            dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
+            member_dataset = dataset["train"]
+            valid_dataset = dataset["validation"]
+            test_dataset = dataset["test"]
+            #merge valid and test
+            non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+        elif domain == "open-web-math":
+            dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
+            member_dataset = dataset["train"]
+            valid_dataset = dataset["validation"]
+            test_dataset = dataset["test"]
+            #merge valid and test
+            non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
         for i in range(enumerate_length):
             print (f"Processing {domain} with length {length_list[i]}")
             if length_list[i] == 0:
