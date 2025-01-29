@@ -27,7 +27,7 @@ all_encoded_inputs = []
 # Process each batch and add it to the list
 for batch in batched_data(dataset, batch_size):
     texts = [x["text"] for x in batch]
-    encoded_inputs = tokenizer(texts, padding='max_length', truncation=True, max_length=seq_len, return_tensors='np')
+    encoded_inputs = tokenizer(texts, padding='max_length', truncation=True, max_length=seq_len, return_tensors='pt')
     # Convert tensors to plain numpy array for easier handling
     input_ids_np = encoded_inputs['input_ids'].numpy()
     all_encoded_inputs.append(input_ids_np)
