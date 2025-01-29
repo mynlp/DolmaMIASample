@@ -69,7 +69,7 @@ seed_list = [10345, 19238, 19093]
 data_list = ["algebraic-stack"]
 length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
-sample_num = 1000
+sample_num = 100000
 for idx, seed in enumerate(seed_list):
     for domain in data_list:
         if domain == "code search net":
