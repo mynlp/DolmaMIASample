@@ -82,6 +82,10 @@ if __name__ == "__main__":
             for step, batch_token_ids in enumerate(dataloader):
                 text = tokenizer.decode(batch_token_ids[0].tolist(), skip_special_tokens=True)
                 samples.append(text)
+                if step % 1000 == 0:
+                    print(f"Processed {step} samples")
+                    if step > 100000:
+                        break
             print(f"Number of samples  in {file_name} domain:", len(samples))
             # Store the samples in a dataset
             text_dataset = TextDataset(samples)
