@@ -70,7 +70,7 @@ seed_list = [10345, 19238, 19093]
 data_list = ["algebraic-stack"]
 length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
-sample_num = 100000
+sample_num = 200000
 for idx, seed in enumerate(seed_list):
     for domain in data_list:
         if domain == "code search net":
@@ -88,7 +88,7 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            train_sampled = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
             test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
