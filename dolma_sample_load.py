@@ -53,7 +53,7 @@ def load_text_dataset(filename, directory="saved_datasets"):
 if __name__ == "__main__":
     file_list = [
         "c4_en_valid.npy", "dolma_book_valid.npy", "m2d2_s2orc_valid.npy",
-        "pile_valid.npy", "stack_valid.npy", "wikipedia_v103_valid.npy",
+        "pile_valid.npy", "stack_valid.npy", "wikitext_v103_valid.npy",
         "common_crawl_valid.npy", "ice_valid.npy", "pes2o_valid.npy",
         "reddit_valid.npy", "wiki_valid.npy"
     ]
@@ -78,8 +78,6 @@ if __name__ == "__main__":
 
             samples = []
             for step, batch_token_ids in enumerate(dataloader):
-                if len(samples) >= 150:
-                    break
                 text = tokenizer.decode(batch_token_ids[0].tolist(), skip_special_tokens=True)
                 samples.append(text)
             print(f"Number of samples  in {file_name} domain:", len(samples))
