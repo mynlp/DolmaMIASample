@@ -95,5 +95,5 @@ if __name__ == "__main__":
             # Save each dataset
             file_label = f"{base_name}_seq_len_{seq_len}"
             save_text_dataset(text_dataset, file_label, directory=f"data_OLMo2_13b_1124/{indicator}/processed_data")
-
+            del text_dataset
 
