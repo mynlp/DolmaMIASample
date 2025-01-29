@@ -51,13 +51,15 @@ def load_text_dataset(filename, directory="saved_datasets"):
 
 
 if __name__ == "__main__":
-    file_list = [
-        "c4_en_valid.npy", "dolma_book_valid.npy", "m2d2_s2orc_valid.npy",
-        "pile_valid.npy", "stack_valid.npy", "wikitext_v103_valid.npy",
-        "common_crawl_valid.npy", "ice_valid.npy", "pes2o_valid.npy",
-        "reddit_valid.npy", "wiki_valid.npy"
-    ]
-    root_file = "data_OLMo2_13b_1124/eval_data/raw_data/"
+    # file_list = [
+    #     "c4_en_valid.npy", "dolma_book_valid.npy", "m2d2_s2orc_valid.npy",
+    #     "pile_valid.npy", "stack_valid.npy", "wikitext_v103_valid.npy",
+    #     "common_crawl_valid.npy", "ice_valid.npy", "pes2o_valid.npy",
+    #     "reddit_valid.npy", "wiki_valid.npy"
+    # ]
+    file_list = ["wiki_train.npy"]
+    indicator = "train_data"
+    root_file = f"data_OLMo2_13b_1124/{indicator}/raw_data/"
 
     tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
     seq_len_list = [100, 200, 300, 400, 500, 600, 700, 800, 900]
@@ -86,6 +88,6 @@ if __name__ == "__main__":
 
             # Save each dataset
             file_label = f"{base_name}_seq_len_{seq_len}"
-            save_text_dataset(text_dataset, file_label, directory="data_OLMo2_13b_1124/eval_data/processed_data")
+            save_text_dataset(text_dataset, file_label, directory=f"data_OLMo2_13b_1124/{indicator}/processed_data")
 
 
