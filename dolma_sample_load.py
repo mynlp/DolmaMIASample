@@ -82,7 +82,7 @@ if __name__ == "__main__":
                     break
                 text = tokenizer.decode(batch_token_ids[0].tolist(), skip_special_tokens=True)
                 samples.append(text)
-            print(f"Number of samples  in {file_list} domain:", len(samples))
+            print(f"Number of samples  in {file_name} domain:", len(samples))
             # Store the samples in a dataset
             text_dataset = TextDataset(samples)
 
