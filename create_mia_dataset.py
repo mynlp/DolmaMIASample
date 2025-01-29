@@ -17,7 +17,11 @@ def filter_data(data, min_length, max_length, args, domain):
     for i in tqdm(range(0, len(data[key]), args.batch_size)):
         batch = data[i:i + args.batch_size]
         texts = [item for item in batch]
-        lengths = [len(text.split()) for text in texts]
+        if domain == "code search net":
+            lengths = [len(text) for text in texts]
+        else:
+            lengths = [len(text.split()) for text in texts]
+
         if args.select_method == "nontruncate":
             valid_indices = (np.array(lengths) >= min_length) & (np.array(lengths) <= max_length)
             filtered_data.extend([batch[j] for j in range(len(batch)) if valid_indices[j]])
@@ -65,6 +69,7 @@ for idx, seed in enumerate(seed_list):
             #merge valid and test
             non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
         for i in range(enumerate_length):
+            print (f"Processing {domain} with length {length_list[i]}")
             if length_list[i] == 0:
                 min_length = 5
                 max_length = length_list[i + 1]
