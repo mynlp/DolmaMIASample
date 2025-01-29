@@ -17,7 +17,7 @@ print(dataset)
 
 batch_size = 32
 
-file_path = '/work/gk77/share/DolmaMIASample/train_data/raw_data/pes2o.npy'
+file_path = '/work/gk77/share/DolmaMIASample/data_OLMo2_13b_1124/train_data/raw_data/pes2o.npy'
 estimated_total_samples = 100000
 fp = np.memmap(file_path, dtype='uint32', mode='w+', shape=(estimated_total_samples, 128))
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
