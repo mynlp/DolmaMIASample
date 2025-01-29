@@ -58,7 +58,7 @@ enumerate_length = len(length_list)
 for idx, seed in enumerate(seed_list):
     for domain in data_list:
         if domain == "code search net":
-            dataset = load_dataset("code_search_net/code_search_net")
+            dataset = load_dataset("code-search-net/code_search_net")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
