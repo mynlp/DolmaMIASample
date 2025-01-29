@@ -57,7 +57,9 @@ if __name__ == "__main__":
     #     "common_crawl_valid.npy", "ice_valid.npy", "pes2o_valid.npy",
     #     "reddit_valid.npy", "wiki_valid.npy"
     # ]
-    file_list = ["wiki_train.npy"]
+
+    #train "wiki_train.npy"
+    file_list = ["pes2o_train.npy"]
     indicator = "train_data"
     root_file = f"data_OLMo2_13b_1124/{indicator}/raw_data/"
 
@@ -84,7 +86,7 @@ if __name__ == "__main__":
                 samples.append(text)
                 if step % 1000 == 0:
                     print(f"Processed {step} samples")
-                    if step > 100000:
+                    if step == 50000:
                         break
             print(f"Number of samples  in {file_name} domain:", len(samples))
             # Store the samples in a dataset
