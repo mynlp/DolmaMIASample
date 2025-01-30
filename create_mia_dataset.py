@@ -159,8 +159,9 @@ for idx, seed in enumerate(seed_list):
                 min_length = 5
                 max_length = length_list[i + 1]
             elif length_list[i] == "rest":
-                min_length = 1000
-                max_length = 100000000000
+                continue
+                #min_length = 1000
+                #max_length = 100000000000
             else:
                 min_length = length_list[i]
                 max_length = min_length + 100
