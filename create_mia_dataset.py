@@ -130,7 +130,7 @@ for idx, seed in enumerate(seed_list):
         test_sampled = test_dataset
         non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
     elif args.domain == "arxiv":
-        if arg.device == "wisteria":
+        if args.device == "wisteria":
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
         else:
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv", cache_dir=f"{prefix}")
