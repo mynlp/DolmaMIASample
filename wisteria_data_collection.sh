@@ -13,4 +13,4 @@ if [ -z "$RUN_ON_REMOTE" ]; then
 fi
 
 #python dolma_sample_load.py
-python tes.py
+python creat_mia_dataset.py
