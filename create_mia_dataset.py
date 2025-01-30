@@ -116,11 +116,10 @@ for idx, seed in enumerate(seed_list):
             test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "arxiv":
-            if device == "wisterira":
-                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
+            if device == "wisteria":
+                dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
             else:
-                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir=f"{prefix}")
-            dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
+                dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv", cache_dir=f"{prefix}")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
@@ -145,10 +144,9 @@ for idx, seed in enumerate(seed_list):
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "open-web-math":
             if device == "wisterira":
-                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
+                dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
             else:
-                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir=f"{prefix}")
-            dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
+                dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math", cache_dir=f"{prefix}")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
