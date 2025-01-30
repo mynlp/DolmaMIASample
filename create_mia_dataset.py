@@ -192,8 +192,8 @@ for idx, seed in enumerate(seed_list):
             min_length = length_list[i]
             max_length = min_length + 100
         if args.domain in ["dolma wiki", "dolma pes2o"]:
-            member_dataset = MemmapTokenDataset(member_dataset_path, seq=max_length, dtype="uint32")
-            non_member_dataset = MemmapTokenDataset(non_member_dataset_path, seq=max_length, dtype="uint32")
+            member_dataset = MemmapTokenDataset(member_dataset_path, seq_len=max_length, dtype="uint32")
+            non_member_dataset = MemmapTokenDataset(non_member_dataset_path, seq_len=max_length, dtype="uint32")
             filtered_member_data = load_and_filter_npy_data(member_dataset, args)
             filtered_nonmember_data = load_and_filter_npy_data(non_member_dataset, args)
         else:
