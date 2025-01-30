@@ -5,7 +5,7 @@ import torch
 import random
 import numpy as np
 from transformers import AutoTokenizer
-from datasets import DatasetDict, Dataset, load_dataset, concatenate_datasets
+from datasets import DatasetDict, Dataset, load_dataset, concatenate_datasets, load_from_disk
 import argparse
 
 
@@ -90,10 +90,17 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            random_indices = random.sample(range(len(member_dataset)), k=sample_num if sample_num < len(member_dataset) else len(member_dataset))
-            member_dataset = member_dataset.select(random_indices)
-            member_dataset = member_dataset.shuffle(seed=seed)
-
+            if os.path.exists(f"./dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}"):
+                member_dataset = load_from_disk(f"./dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            else:
+                random_indices = random.sample(range(len(member_dataset)),
+                                               k=sample_num if sample_num < len(member_dataset) else len(
+                                                   member_dataset))
+                member_dataset = member_dataset.select(random_indices)
+                os.makedirs(f"./dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}", exist_ok=True)
+                member_dataset.save_to_disk(f"./dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+                member_dataset = load_from_disk(f"./dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            #member_dataset = member_dataset.shuffle(seed=seed)
             #member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
             test_sampled = test_dataset.shuffle(seed=seed).select(min(sample_num, len(test_dataset)))
