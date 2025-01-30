@@ -91,7 +91,6 @@ for idx, seed in enumerate(seed_list):
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
             prefix = "."
-            #prefix = "/data/bwchen"
             if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}"):
                 member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
             else:
@@ -102,11 +101,9 @@ for idx, seed in enumerate(seed_list):
                 os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}", exist_ok=True)
                 member_dataset.save_to_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
                 member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
-            #member_dataset = member_dataset.shuffle(seed=seed)
-            #member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
-            #validation_sampled = valid_dataset#.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
-            #test_sampled = test_dataset#.shuffle(seed=seed).select(min(sample_num, len(test_dataset)))
             #merge valid and test
+            validation_sampled = valid_dataset
+            test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "arxiv":
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
