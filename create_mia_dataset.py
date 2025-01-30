@@ -75,7 +75,7 @@ seed_list = [10345, 19238, 19093]
 #I will directly corpy "pile arxiv"
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
 data_list = ["algebraic-stack"]
-length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
+length_list = [ 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
 sample_num = 200000
 for idx, seed in enumerate(seed_list):
