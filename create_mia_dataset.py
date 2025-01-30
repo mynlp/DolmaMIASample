@@ -86,7 +86,7 @@ for idx, seed in enumerate(seed_list):
             member_dataset = load_text_dataset( f"wiki_train_seq_len_100", f"data_OLMo2_13b_1124/train_data/processed_data")
             non_member_dataset = load_text_dataset( f"wiki_valid_seq_len_200", f"data_OLMo2_13b_1124/eval_data/processed_data")
         elif domain == "algebraic-stack":
-            dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir="/data/bwchen")
+            dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
