@@ -75,7 +75,7 @@ seed_list = [10345, 19238, 19093]
 #I will directly corpy "pile arxiv"
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
 data_list = ["algebraic-stack"]
-length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
+length_list = [100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
 sample_num = 200000
 for idx, seed in enumerate(seed_list):
@@ -93,7 +93,7 @@ for idx, seed in enumerate(seed_list):
             member_dataset = load_text_dataset( f"wiki_train_seq_len_100", f"data_OLMo2_13b_1124/train_data/processed_data")
             non_member_dataset = load_text_dataset( f"wiki_valid_seq_len_200", f"data_OLMo2_13b_1124/eval_data/processed_data")
         elif domain == "algebraic-stack":
-            if device == "wisterira":
+            if device == "wisteria":
                 dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
             else:
                 dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir=f"{prefix}")
@@ -143,7 +143,7 @@ for idx, seed in enumerate(seed_list):
             test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "open-web-math":
-            if device == "wisterira":
+            if device == "wisteria":
                 dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
             else:
                 dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math", cache_dir=f"{prefix}")
@@ -193,8 +193,8 @@ for idx, seed in enumerate(seed_list):
                 'member': train_dataset,
                 'nonmember': test_dataset_short,
             })
-            os.makedirs(f"./dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}",
+            os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}",
                         exist_ok=True)
             dataset.save_to_disk(
-                f"./dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}")
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{domain}")
 
