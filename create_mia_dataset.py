@@ -62,6 +62,13 @@ parser.add_argument("--sample_size", type=int, default=1000)
 parser.add_argument("--select_method", type=str, default="truncate", choices=["truncate", "nontruncate"])
 parser.add_argument("--relative_length", type=str, default="False")
 args = parser.parse_args()
+device = "wisterira" #chomusuke, beyondai
+if device == "wisterira":
+    prefix = "."
+elif device == "chomusuke":
+    prefix = "data/bwchen"
+elif device == "beyondai":
+    prefix = "/store/Dolma"
 
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
 seed_list = [10345, 19238, 19093]
