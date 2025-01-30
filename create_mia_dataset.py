@@ -103,10 +103,10 @@ for idx, seed in enumerate(seed_list):
         non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
     elif args.domain == "dolma wiki":
         member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_train.npy"
-        non_member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_valid.npy"
+        non_member_dataset_path = "data_OLMo2_13b_1124/eval_data/raw_data/wiki_valid.npy"
     elif args.domain == "dolma pes2o":
         member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/pes2o_train.npy"
-        non_member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/pes2o_valid.npy"
+        non_member_dataset_path = "data_OLMo2_13b_1124/eval_data/raw_data/pes2o_valid.npy"
     elif args.domain == "algebraic-stack":
         if args.device == "wisteria":
             dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
