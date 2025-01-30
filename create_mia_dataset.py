@@ -110,20 +110,48 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
-            validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
-            test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
-            #merge valid and test
+            prefix = "."
+            if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}"):
+                member_dataset = load_from_disk(
+                    f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            else:
+                random_indices = random.sample(range(len(member_dataset)),
+                                               k=sample_num if sample_num < len(member_dataset) else len(
+                                                   member_dataset))
+                member_dataset = member_dataset.select(random_indices)
+                os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}",
+                            exist_ok=True)
+                member_dataset.save_to_disk(
+                    f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+                member_dataset = load_from_disk(
+                    f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            # merge valid and test
+            validation_sampled = valid_dataset
+            test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "open-web-math":
             dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
-            validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
-            test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
-            #merge valid and test
+            prefix = "."
+            if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}"):
+                member_dataset = load_from_disk(
+                    f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            else:
+                random_indices = random.sample(range(len(member_dataset)),
+                                               k=sample_num if sample_num < len(member_dataset) else len(
+                                                   member_dataset))
+                member_dataset = member_dataset.select(random_indices)
+                os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}",
+                            exist_ok=True)
+                member_dataset.save_to_disk(
+                    f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+                member_dataset = load_from_disk(
+                    f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            # merge valid and test
+            validation_sampled = valid_dataset
+            test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         for i in range(enumerate_length):
             print (f"Processing {domain} with length {length_list[i]}")
