@@ -72,6 +72,8 @@ length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
 sample_num = 200000
 for idx, seed in enumerate(seed_list):
+    #fix the random seed
+    random.seed(seed)
     for domain in data_list:
         if domain == "code search net":
             dataset = load_dataset("code-search-net/code_search_net")
@@ -88,11 +90,15 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
+            random_indices = random.sample(range(len(member_dataset)), k=sample_num if sample_num < len(member_dataset) else len(member_dataset))
+            member_dataset = member_dataset.select(random_indices)
+            member_dataset = member_dataset.shuffle(seed=seed)
+
+            #member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
-            test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
+            test_sampled = test_dataset.shuffle(seed=seed).select(min(sample_num, len(test_dataset)))
             #merge valid and test
-            non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+            non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "arxiv":
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
             member_dataset = dataset["train"]
@@ -102,7 +108,7 @@ for idx, seed in enumerate(seed_list):
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
             test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
-            non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+            non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "open-web-math":
             dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
             member_dataset = dataset["train"]
@@ -112,7 +118,7 @@ for idx, seed in enumerate(seed_list):
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
             test_sampled = test_dataset.shuffle(seed=seed).select(range(min(sample_num, len(test_dataset))))
             #merge valid and test
-            non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+            non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         for i in range(enumerate_length):
             print (f"Processing {domain} with length {length_list[i]}")
             if length_list[i] == 0:
