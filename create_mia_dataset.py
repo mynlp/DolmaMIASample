@@ -7,6 +7,8 @@ import numpy as np
 from transformers import AutoTokenizer
 from datasets import DatasetDict, Dataset, load_dataset, concatenate_datasets, load_from_disk
 import argparse
+from dolma_sample_load import MemmapTokenDataset, collate_fn
+from torch.utils.data import Dataset, DataLoader
 
 
 def filter_data(data, min_length, max_length, args, domain):
@@ -41,9 +43,25 @@ def load_and_filter_data(dataset, min_length, max_length, args, domain):
         return random.sample(merged_data, args.sample_size)
     return merged_data
 
-def load_and_filter_npy_data(dataset, min_length, max_length, args, domain):
+def load_and_filter_npy_data(dataset, args):
     """filtering and load"""
     merged_data = []
+    dataloader = DataLoader(
+        dataset=dataset,
+        batch_size=1,
+        shuffle=False,
+        num_workers=0,
+        collate_fn=collate_fn
+    )
+    for step, batch_token_ids in enumerate(dataloader):
+        text = tokenizer.decode(batch_token_ids[0].tolist(), skip_special_tokens=True)
+        merged_data.append(text)
+        if step % 1000 == 0:
+            print(f"Processed {step} samples")
+            if step == 50000:
+                break
+    if len(merged_data) > args.sample_size:
+        return random.sample(merged_data, args.sample_size)
     return merged_data
 
 def load_text_dataset(filename, directory="saved_datasets"):
@@ -90,8 +108,11 @@ for idx, seed in enumerate(seed_list):
             #merge valid and test
             non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
         elif domain == "dolma wiki":
-            member_dataset = load_text_dataset( f"wiki_train_seq_len_100", f"data_OLMo2_13b_1124/train_data/processed_data")
-            non_member_dataset = load_text_dataset( f"wiki_valid_seq_len_200", f"data_OLMo2_13b_1124/eval_data/processed_data")
+            member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_train.npy"
+            non_member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_valid.npy"
+        elif domain == "dolma pes2o":
+            member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/pes2o_train.npy"
+            non_member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/pes2o_valid.npy"
         elif domain == "algebraic-stack":
             if device == "wisteria":
                 dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
@@ -178,8 +199,14 @@ for idx, seed in enumerate(seed_list):
             else:
                 min_length = length_list[i]
                 max_length = min_length + 100
-            filtered_member_data = load_and_filter_data(member_dataset, min_length, max_length, args, domain)
-            filtered_nonmember_data = load_and_filter_data(non_member_dataset, min_length, max_length, args, domain)
+            if domain in ["dolma wiki", "dolma pes2o"]:
+                member_dataset = MemmapTokenDataset(member_dataset_path, seq=max_length, dtype="uint32")
+                non_member_dataset = MemmapTokenDataset(non_member_dataset_path, seq=max_length, dtype="uint32")
+                filtered_member_data = load_and_filter_npy_data(member_dataset, args)
+                filtered_nonmember_data = load_and_filter_npy_data(non_member_dataset, args)
+            else:
+                filtered_member_data = load_and_filter_data(member_dataset, min_length, max_length, args, domain)
+                filtered_nonmember_data = load_and_filter_data(non_member_dataset, min_length, max_length, args, domain)
             member_data = []
             nonmember_data = []
             member_data.extend(filtered_member_data)
