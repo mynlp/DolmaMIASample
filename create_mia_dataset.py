@@ -77,7 +77,7 @@ parser.add_argument("--sample_size", type=int, default=1000)
 parser.add_argument("--select_method", type=str, default="truncate", choices=["truncate", "nontruncate"])
 parser.add_argument("--relative_length", type=str, default="False")
 parser.add_argument("--domain", type=str, default="arxiv")
-parser.add_argument("--device", type=int, default="beyondai")
+parser.add_argument("--device", type=str, default="beyondai")
 args = parser.parse_args()
 if args.device == "wisteria":
     prefix = "."
