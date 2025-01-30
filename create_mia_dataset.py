@@ -8,7 +8,7 @@ from transformers import AutoTokenizer
 from datasets import DatasetDict, Dataset, load_dataset, concatenate_datasets, load_from_disk
 import argparse
 from dolma_sample_load import MemmapTokenDataset, collate_fn
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 
 
 def filter_data(data, min_length, max_length, args, domain):
