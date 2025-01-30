@@ -90,16 +90,18 @@ for idx, seed in enumerate(seed_list):
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
-            if os.path.exists(f"/data/bwchen/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}"):
-                member_dataset = load_from_disk(f"./dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+            prefix = "."
+            #prefix = "/data/bwchen"
+            if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}"):
+                member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
             else:
                 random_indices = random.sample(range(len(member_dataset)),
                                                k=sample_num if sample_num < len(member_dataset) else len(
                                                    member_dataset))
                 member_dataset = member_dataset.select(random_indices)
-                os.makedirs(f"/data/bwchen/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}", exist_ok=True)
-                member_dataset.save_to_disk(f"/data/bwchen/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
-                member_dataset = load_from_disk(f"/data/bwchen/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+                os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}", exist_ok=True)
+                member_dataset.save_to_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
+                member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{domain}/raw_data/{seed}")
             #member_dataset = member_dataset.shuffle(seed=seed)
             #member_dataset = member_dataset.shuffle(seed=seed).select(range(min(sample_num, len(member_dataset))))
             validation_sampled = valid_dataset.shuffle(seed=seed).select(range(min(sample_num, len(valid_dataset))))
