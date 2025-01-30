@@ -57,7 +57,7 @@ if __name__ == "__main__":
     # ]
 
     #train "wiki_train.npy"
-    file_list = ["pes2o_train.npy"]
+    file_list = ["wiki_train.npy"]
     indicator = "train_data"
     root_file = f"data_OLMo2_13b_1124/{indicator}/raw_data/"
 
