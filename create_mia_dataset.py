@@ -93,7 +93,10 @@ for idx, seed in enumerate(seed_list):
             member_dataset = load_text_dataset( f"wiki_train_seq_len_100", f"data_OLMo2_13b_1124/train_data/processed_data")
             non_member_dataset = load_text_dataset( f"wiki_valid_seq_len_200", f"data_OLMo2_13b_1124/eval_data/processed_data")
         elif domain == "algebraic-stack":
-            dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
+            if device == "wisterira":
+                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
+            else:
+                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir=f"{prefix}")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
             test_dataset = dataset["test"]
@@ -113,6 +116,10 @@ for idx, seed in enumerate(seed_list):
             test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "arxiv":
+            if device == "wisterira":
+                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
+            else:
+                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir=f"{prefix}")
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
@@ -137,6 +144,10 @@ for idx, seed in enumerate(seed_list):
             test_sampled = test_dataset
             non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
         elif domain == "open-web-math":
+            if device == "wisterira":
+                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack")
+            else:
+                dataset = load_dataset("EleutherAI/proof-pile-2", "algebraic-stack", cache_dir=f"{prefix}")
             dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
             member_dataset = dataset["train"]
             valid_dataset = dataset["validation"]
