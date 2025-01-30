@@ -62,8 +62,8 @@ parser.add_argument("--sample_size", type=int, default=1000)
 parser.add_argument("--select_method", type=str, default="truncate", choices=["truncate", "nontruncate"])
 parser.add_argument("--relative_length", type=str, default="False")
 args = parser.parse_args()
-device = "wisterira" #chomusuke, beyondai
-if device == "wisterira":
+device = "wisteria" #chomusuke, beyondai
+if device == "wisteria":
     prefix = "."
 elif device == "chomusuke":
     prefix = "data/bwchen"
