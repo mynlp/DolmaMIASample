@@ -10,6 +10,7 @@
 
 
 # 定义并行化函数
+source ~/anaconda3/bin/activate base
 export TRANSFORMERS_CACHE=/store
 echo "Current working directory: $(pwd)"
 echo "Current user: $(whoami)"
