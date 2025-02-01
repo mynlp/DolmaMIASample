@@ -10,4 +10,4 @@
 
 
 # 定义并行化函数
-python create_mia_dataset.py  --device beyondai --domain arxiv --batch_size 10
+python create_mia_dataset.py  --device beyondai --domain arxiv --batch_size 100
