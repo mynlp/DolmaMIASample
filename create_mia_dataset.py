@@ -97,7 +97,9 @@ data_list = ["arxiv"]
 length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
 sample_num = 200000
-for idx, seed in enumerate(seed_list):
+for x in seed_list:
+    seed = x[1]
+    idx = x[0]
     random.seed(seed)
     if args.domain == "code search net":
         dataset = load_dataset("code-search-net/code_search_net")
