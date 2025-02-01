@@ -1,7 +1,7 @@
 #!/bin/zsh
 #PJM -L rscgrp=share
 #PJM -L gpu=1
-#PJM -L elapse=3:00:00
+#PJM -L elapse=24:00:00
 #PJM -g gk77
 #PJM -j
 #PJM -N data_collection
@@ -13,4 +13,4 @@ if [ -z "$RUN_ON_REMOTE" ]; then
 fi
 
 #python dolma_sample_load.py
-python creat_mia_dataset.py
+python creat_mia_dataset.py --device wisteria --domain arxiv --batch_size 100
