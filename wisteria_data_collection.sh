@@ -13,4 +13,4 @@ if [ -z "$RUN_ON_REMOTE" ]; then
 fi
 
 #python dolma_sample_load.py
-python creat_mia_dataset.py --device wisteria --domain arxiv --batch_size 100
+python create_mia_dataset.py --device wisteria --domain arxiv --batch_size 100
