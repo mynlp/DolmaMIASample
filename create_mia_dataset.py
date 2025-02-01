@@ -9,7 +9,7 @@ from datasets import DatasetDict, Dataset, load_dataset, concatenate_datasets, l
 import argparse
 from dolma_sample_load import MemmapTokenDataset, collate_fn
 from torch.utils.data import DataLoader
-
+import gc
 
 def filter_data(data, min_length, max_length, args, domain):
     """批量过滤文本长度在给定Token数量范围的数据"""
@@ -32,6 +32,7 @@ def filter_data(data, min_length, max_length, args, domain):
         elif args.select_method == "truncate" and args.relative_length == "False":
             valid_indices = (np.array(lengths) >= min_length)
             filtered_data.extend([" ".join(batch[j].split()[:max_length]) for j in range(len(batch)) if valid_indices[j]])
+        gc.collect()
     return filtered_data
 
 def load_and_filter_data(dataset, min_length, max_length, args, domain):
