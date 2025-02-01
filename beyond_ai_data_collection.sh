@@ -10,4 +10,7 @@
 
 
 # 定义并行化函数
+export TRANSFORMERS_CACHE=/store
+echo "Current working directory: $(pwd)"
+echo "Current user: $(whoami)"
 python create_mia_dataset.py  --device beyondai --domain arxiv --batch_size 100

@@ -171,3 +171,6 @@ cython_debug/
 .pypirc
 data_OLMo2_13b_1124/
 tiny_dolma/
+dolma_absolute_filtered_dataset_1/
+dolma_absolute_filtered_dataset_2/
+dolma_absolute_filtered_dataset_3/
