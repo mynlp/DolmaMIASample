@@ -153,6 +153,7 @@ for idx, seed in enumerate(seed_list):
                 f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
         # merge valid and test
         pdb.set_trace()
+        del dataset
         validation_sampled = valid_dataset
         test_sampled = test_dataset
         non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
