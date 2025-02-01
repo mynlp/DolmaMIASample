@@ -8,7 +8,7 @@
 #SBATCH --error=datacollection.err
 #SBATCH --cpus-per-task=8          # 每个任务使用的CPU数量
 
-
+ export TRANSFORMERS_CACHE=/home/user10003/.cache
 # 定义并行化函数
 source ~/anaconda3/bin/activate base
 export TRANSFORMERS_CACHE=/store
