@@ -13,4 +13,7 @@
 export TRANSFORMERS_CACHE=/store
 echo "Current working directory: $(pwd)"
 echo "Current user: $(whoami)"
+echo "Environment Variables:"
+printenv
+
 python create_mia_dataset.py  --device beyondai --domain arxiv --batch_size 100
