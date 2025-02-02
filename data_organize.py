@@ -58,7 +58,7 @@ def reorganize_dataset(src_dir, dest_dir, skip_intervals=None):
 
 if __name__ == "__main__":
     # 设定源数据文件夹，本示例要求该文件夹与脚本处于同一目录，必要时请调整路径
-    source_directory = "dolma_absolute_filtered_dataset_1"
+    source_directory = "dolma_dataset_truncated_1"
     # 指定重组后数据存放的目标文件夹
     destination_directory = "dolma"
     # 若你需要跳过某某区间，在此处列出即可；这里设为空列表，表示不跳过任何区间，包括 200_300
