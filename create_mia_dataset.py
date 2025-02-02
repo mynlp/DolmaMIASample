@@ -87,14 +87,14 @@ elif args.device == "chomusuke":
 elif args.device == "beyondai":
     prefix = "/store/Dolma"
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
-seed_list = [[0, 10345], [1, 19238], [2, 19093]]
+#seed_list = [[0, 10345], [1, 19238], [2, 19093]]
 seed_list = [[0, 10345]]
 #seed_list = [[1, 19238]]
 #seed_list = [[2, 19093]]
 
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
 data_list = ["arxiv"]
-length_list = [600, 700, 800, 900, "rest"]
+length_list = [0, 100, 200, 300, 400, 500]#600, 700, 800, 900, "rest"
 enumerate_length = len(length_list)
 sample_num = 200000
 for x in seed_list:
