@@ -43,7 +43,7 @@ def filter_data(data, min_length, max_length, args, domain):
         #pdb.set_trace()
         t4 = time.perf_counter()
         lengths = torch.tensor(lengths, device=device)
-        if args.select_method == "nontruncate":
+        if args.select_method == "nontruncated":
             # Retain items only if their token count is in the desired range.
             indicator = lengths >= min_length and lengths <= max_length
             if domain == "code_search_net":
@@ -56,7 +56,7 @@ def filter_data(data, min_length, max_length, args, domain):
                      if l == True]
                 )
 
-        elif args.select_method == "truncate" and args.relative_length == "False":
+        elif args.select_method == "truncated" and args.relative_length == "False":
             # Here we drop items that do not reach the minimum length.
             indicator = lengths >= min_length
             if domain == "code_search_net":
@@ -318,8 +318,8 @@ for x in seed_list:
             'member': train_dataset,
             'nonmember': test_dataset_short,
         })
-        os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{args.domain}",
+        os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_{args.select_method}/{args.domain}",
                     exist_ok=True)
         dataset.save_to_disk(
-            f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_truncated/{args.domain}")
+            f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{min_length}_{max_length}_{args.select_method}/{args.domain}")
 
