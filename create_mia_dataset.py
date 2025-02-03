@@ -12,19 +12,25 @@ from torch.utils.data import DataLoader
 import gc
 import torch
 from torch.nn.utils.rnn import pad_sequence
-
+import time
 
 
 #
 def filter_data(data, min_length, max_length, args, domain):
     """批量过滤文本长度在给定Token数量范围的数据"""
     filtered_data = []
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     if domain == "code_search_net":
         key = "func_code_tokens"
     elif domain in ["algebraic-stack", "open-web-math", "arxiv"]:
         key = "text"
     for i in tqdm(range(0, len(data[key]), args.batch_size)):
+        batch_start_time = time.perf_counter()
+        t0 = time.perf_counter()
         batch = data[key][i:i + args.batch_size]
+        batch_read_time = time.perf_counter() - t0
+        t2 = time.perf_counter()
         if domain == "code_search_net":
             # Here items are assumed to be token lists so we just count their length.
             lengths = [len(item) for item in batch]
@@ -32,8 +38,9 @@ def filter_data(data, min_length, max_length, args, domain):
             # Tokenize each string once; we save the result so that we do splitting only one time per item.
             tokenized_batch = [text.split() for text in batch]
             lengths = [len(tokens) for tokens in tokenized_batch]
+        batch_length_time = time.perf_counter() - t2
         #pdb.set_trace()
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        t4 = time.perf_counter()
         lengths = torch.tensor(lengths, device=device)
         if args.select_method == "nontruncate":
             # Retain items only if their token count is in the desired range.
@@ -60,6 +67,13 @@ def filter_data(data, min_length, max_length, args, domain):
                     [" ".join(tokens[:max_length]) for tokens, l in zip(tokenized_batch, indicator) if l == True]
                 )
             # Remove or delay gc.collect() if not strictly necessary.
+        batch_filtering_time = time.perf_counter() - t4
+        batch_total_time = time.perf_counter() - batch_start_time
+        print("  数据读取耗时:       {:.6f} 秒".format(batch_read_time))
+        print("  Token长度计算耗时:   {:.6f} 秒".format(batch_length_time))
+        print("  数据过滤处理耗时:    {:.6f} 秒".format(batch_filtering_time))
+        print("  当前batch总耗时:      {:.6f} 秒".format(batch_total_time))
+        print("-" * 40)
     return filtered_data
 
 def load_and_filter_data(dataset, min_length, max_length, args, domain):
