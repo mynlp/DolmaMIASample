@@ -79,6 +79,7 @@ parser.add_argument("--select_method", type=str, default="truncate", choices=["t
 parser.add_argument("--relative_length", type=str, default="False")
 parser.add_argument("--domain", type=str, default="arxiv")
 parser.add_argument("--device", type=str, default="beyondai")
+parser.add_argument("--dataset_idx", type=int, default=1)
 args = parser.parse_args()
 if args.device == "wisteria":
     prefix = "."
@@ -88,9 +89,12 @@ elif args.device == "beyondai":
     prefix = "/store/Dolma"
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
 #seed_list = [[0, 10345], [1, 19238], [2, 19093]]
-seed_list = [[0, 10345]]
-#seed_list = [[1, 19238]]
-#seed_list = [[2, 19093]]
+if args.device == 1:
+    seed_list = [[0, 10345]]
+elif args.device == 2:
+    seed_list = [[1, 19238]]
+elif args.device == 3:
+    seed_list = [[2, 19093]]
 
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
 data_list = ["arxiv"]
