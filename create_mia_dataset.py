@@ -20,21 +20,38 @@ def filter_data(data, min_length, max_length, args, domain):
         key = "text"
     for i in tqdm(range(0, len(data[key]), args.batch_size)):
         batch = data[key][i:i + args.batch_size]
-        texts = [item for item in batch]
         if domain == "code_search_net":
-            lengths = [len(text) for text in texts]
+            # Here items are assumed to be token lists so we just count their length.
+            lengths = [len(item) for item in batch]
         else:
-            lengths = [len(text.split()) for text in texts]
+            # Tokenize each string once; we save the result so that we do splitting only one time per item.
+            tokenized_batch = [text.split() for text in batch]
+            lengths = [len(tokens) for tokens in tokenized_batch]
         #pdb.set_trace()
         if args.select_method == "nontruncate":
-            valid_indices = (np.array(lengths) >= min_length) & (np.array(lengths) <= max_length)
-            filtered_data.extend([batch[j] for j in range(len(batch)) if valid_indices[j]])
-        elif args.select_method == "truncate" and args.relative_length == "False":
-            valid_indices = (np.array(lengths) >= min_length)
+            # Retain items only if their token count is in the desired range.
             if domain == "code_search_net":
-                filtered_data.extend([" ".join(batch[j][:max_length]) for j in range(len(batch)) if valid_indices[j]])
+                filtered_data.extend(
+                    [item for item, l in zip(batch, lengths) if min_length <= l <= max_length]
+                )
             else:
-                filtered_data.extend([" ".join(batch[j].split()[:max_length]) for j in range(len(batch)) if valid_indices[j]])
+                filtered_data.extend(
+                    [" ".join(tokens) for tokens, l in zip(tokenized_batch, lengths)
+                     if min_length <= l <= max_length]
+                )
+
+        elif args.select_method == "truncate" and args.relative_length == "False":
+            # Here we drop items that do not reach the minimum length.
+            if domain == "code_search_net":
+                filtered_data.extend(
+                    [" ".join(item[:max_length]) for item, l in zip(batch, lengths) if l >= min_length]
+                )
+            else:
+                filtered_data.extend(
+                    [" ".join(tokens[:max_length]) for tokens, l in zip(tokenized_batch, lengths) if l >= min_length]
+                )
+
+            # Remove or delay gc.collect() if not strictly necessary.
         gc.collect()
     return filtered_data
 
