@@ -89,11 +89,11 @@ elif args.device == "beyondai":
     prefix = "/store/Dolma"
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
 #seed_list = [[0, 10345], [1, 19238], [2, 19093]]
-if args.device == 1:
+if args.dataset_idx == 1:
     seed_list = [[0, 10345]]
-elif args.device == 2:
+elif args.dataset_idx == 2:
     seed_list = [[1, 19238]]
-elif args.device == 3:
+elif args.dataset_idx == 3:
     seed_list = [[2, 19093]]
 
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
