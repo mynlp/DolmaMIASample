@@ -100,7 +100,14 @@ elif args.dataset_idx == 3:
 
 #data_list = ["code search net", "dolma wiki", "dolma stack", "m2d2", "arxiv", "open-web-math", "algebraic-stack"]
 data_list = ["arxiv"]
-length_list = [800, 900, "rest"]#600, 700, 800, 900, "rest"
+if args.dataset_idx == 1 and args.domain == "arxiv":
+    length_list = [800, 900, "rest"]#600, 700, 800, 900, "rest"
+elif args.dataset_idx == 2 and args.domain == "arxiv":
+    length_list = [0, 100, 200, 300, 400 ,500]
+elif args.dataset_idx == 3 and args.domain == "arxiv":
+    length_list = [0, 200, 200, 300, 400,  500]
+else:
+    length_list = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, "rest"]
 enumerate_length = len(length_list)
 sample_num = 200000
 for x in seed_list:
