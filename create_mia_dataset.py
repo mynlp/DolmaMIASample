@@ -258,6 +258,7 @@ for x in seed_list:
                                            k=sample_num if sample_num < len(member_dataset) else len(
                                                member_dataset))
             member_dataset = list(member_dataset.select(random_indices))
+            non_member_dataset = list(non_member_dataset)
             os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
                         exist_ok=True)
             pickle.dump(member_dataset, open(
