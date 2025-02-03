@@ -83,8 +83,10 @@ parser.add_argument("--dataset_idx", type=int, default=1)
 args = parser.parse_args()
 if args.device == "wisteria":
     prefix = "."
-elif args.device == "chomusuke":
-    prefix = "data/bwchen"
+elif args.device == "chomusuke1":
+    prefix = "/NAS/Personal/bwchen/Dolmad_ata"
+elif args.device == "chomusuke2":
+    prefix = "/store/bwchen"
 elif args.device == "beyondai":
     prefix = "/store/Dolma"
 tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-1124-13B")
@@ -144,7 +146,7 @@ for x in seed_list:
         if args.device == "wisteria":
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
         else:
-            dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv", trust_remote_code=True)
+            dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv", cache_dir=f"{prefix}", trust_remote_code=True)
         member_dataset = dataset["train"]
         valid_dataset = dataset["validation"]
         test_dataset = dataset["test"]
