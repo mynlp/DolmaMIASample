@@ -162,13 +162,13 @@ for x in seed_list:
         valid_dataset = dataset["validation"]
         test_dataset = dataset["test"]
         non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
-
-        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl"):
+        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl"):
             # member_dataset = load_from_disk(
             #     f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
             #     keep_in_memory=True
             # )
-            member_dataset = pickle.load(open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl", "rb"))
+            member_dataset = pickle.load(open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl", "rb"))
+            non_member_dataset = pickle.load(open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_valid.pkl", "rb"))
         else:
             random_indices = random.sample(range(len(member_dataset)),
                                            k=sample_num if sample_num < len(member_dataset) else len(
@@ -176,12 +176,10 @@ for x in seed_list:
             member_dataset = list(member_dataset.select(random_indices))
             os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
                         exist_ok=True)
-            pickle.dump(member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl", "wb"))
-            #pickle.dump(member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl", "wb"))
+            pickle.dump(member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl", "wb"))
+            pickle.dump(non_member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_valid.pkl", "wb"))
             #dump pickle member dataset
             # merge valid and test
-        validation_sampled = valid_dataset
-        test_sampled = test_dataset
     elif args.domain == "dolma wiki":
         member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_train.npy"
         non_member_dataset_path = "data_OLMo2_13b_1124/eval_data/raw_data/wiki_valid.npy"
@@ -196,20 +194,34 @@ for x in seed_list:
         member_dataset = dataset["train"]
         valid_dataset = dataset["validation"]
         test_dataset = dataset["test"]
-        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}"):
-            member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+        non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl"):
+            #member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            member_dataset = pickle.load(
+                open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl",
+                     "rb"))
+            non_member_dataset = pickle.load(
+                open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_valid.pkl",
+                     "rb"))
         else:
             random_indices = random.sample(range(len(member_dataset)),
                                            k=sample_num if sample_num < len(member_dataset) else len(
                                                member_dataset))
-            member_dataset = member_dataset.select(random_indices)
-            os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}", exist_ok=True)
-            member_dataset.save_to_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
-            member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            member_dataset = list(member_dataset.select(random_indices))
+            os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
+                        exist_ok=True)
+            pickle.dump(member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl", "wb"))
+            pickle.dump(non_member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_valid.pkl", "wb"))
+            # random_indices = random.sample(range(len(member_dataset)),
+            #                                k=sample_num if sample_num < len(member_dataset) else len(
+            #                                    member_dataset))
+            # member_dataset = member_dataset.select(random_indices)
+            # os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}", exist_ok=True)
+            # member_dataset.save_to_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            # member_dataset = load_from_disk(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
         #merge valid and test
-        validation_sampled = valid_dataset
-        test_sampled = test_dataset
-        non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
+        #validation_sampled = valid_dataset
+        #test_sampled = test_dataset
     elif args.domain == "arxiv":
         if args.device == "wisteria":
             dataset = load_dataset("EleutherAI/proof-pile-2", "arxiv")
@@ -218,27 +230,44 @@ for x in seed_list:
         member_dataset = dataset["train"]
         valid_dataset = dataset["validation"]
         test_dataset = dataset["test"]
-        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}"):
-            member_dataset = load_from_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
-            keep_in_memory=True)
+        non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl"):
+            # member_dataset = load_from_disk(
+            #     f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
+            # keep_in_memory=True)
+            member_dataset = pickle.load(
+                open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl",
+                     "rb"))
+            non_member_dataset = pickle.load(
+                open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_valid.pkl",
+                     "rb"))
         else:
+            # random_indices = random.sample(range(len(member_dataset)),
+            #                                k=sample_num if sample_num < len(member_dataset) else len(
+            #                                    member_dataset))
+            # member_dataset = member_dataset.select(random_indices)
+            # os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
+            #             exist_ok=True)
+            # member_dataset.save_to_disk(
+            #     f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            # member_dataset = load_from_disk(
+            #     f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
             random_indices = random.sample(range(len(member_dataset)),
                                            k=sample_num if sample_num < len(member_dataset) else len(
                                                member_dataset))
-            member_dataset = member_dataset.select(random_indices)
+            member_dataset = list(member_dataset.select(random_indices))
             os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
                         exist_ok=True)
-            member_dataset.save_to_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
-            member_dataset = load_from_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            pickle.dump(member_dataset, open(
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_train.pkl", "wb"))
+            pickle.dump(non_member_dataset, open(
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}_valid.pkl", "wb"))
         # merge valid and test
         #pdb.set_trace()
-        del dataset
-        validation_sampled = valid_dataset
-        test_sampled = test_dataset
-        non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
+        # del dataset
+        # validation_sampled = valid_dataset
+        # test_sampled = test_dataset
+        # non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
     elif args.domain == "open-web-math":
         if args.device == "wisteria":
             dataset = load_dataset("EleutherAI/proof-pile-2", "open-web-math")
