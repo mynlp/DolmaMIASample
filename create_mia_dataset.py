@@ -45,7 +45,7 @@ def filter_data(data, min_length, max_length, args, domain):
         lengths = torch.tensor(lengths, device=device)
         if args.select_method == "untruncated":
             # Retain items only if their token count is in the desired range.
-            indicator = (lengths >= min_length) and (lengths <= max_length)
+            indicator = (lengths >= min_length) & (lengths <= max_length)
             if domain == "code_search_net":
                 filtered_data.extend(
                     [item for item, l in zip(batch, indicator) if l == True]
