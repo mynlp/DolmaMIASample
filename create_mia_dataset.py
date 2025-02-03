@@ -14,7 +14,7 @@ import gc
 def filter_data(data, min_length, max_length, args, domain):
     """批量过滤文本长度在给定Token数量范围的数据"""
     filtered_data = []
-    if domain == "code search net":
+    if domain == "code_search_net":
         key = "func_code_tokens"
     elif domain in ["algebraic-stack", "open-web-math", "arxiv"]:
         key = "text"
