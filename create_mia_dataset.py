@@ -21,7 +21,7 @@ def filter_data(data, min_length, max_length, args, domain):
     for i in tqdm(range(0, len(data[key]), args.batch_size)):
         batch = data[key][i:i + args.batch_size]
         texts = [item for item in batch]
-        if domain == "code search net":
+        if domain == "code_search_net":
             lengths = [len(text) for text in texts]
         else:
             lengths = [len(text.split()) for text in texts]
@@ -114,13 +114,29 @@ for x in seed_list:
     seed = x[1]
     idx = x[0]
     random.seed(seed)
-    if args.domain == "code search net":
+    if args.domain == "code_search_net":
         dataset = load_dataset("code-search-net/code_search_net")
         member_dataset = dataset["train"]
         valid_dataset = dataset["validation"]
         test_dataset = dataset["test"]
-        #merge valid and test
-        non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}"):
+            member_dataset = load_from_disk(
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+        else:
+            random_indices = random.sample(range(len(member_dataset)),
+                                           k=sample_num if sample_num < len(member_dataset) else len(
+                                               member_dataset))
+            member_dataset = member_dataset.select(random_indices)
+            os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
+                        exist_ok=True)
+            member_dataset.save_to_disk(
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            member_dataset = load_from_disk(
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            # merge valid and test
+        validation_sampled = valid_dataset
+        test_sampled = test_dataset
+        non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
     elif args.domain == "dolma wiki":
         member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_train.npy"
         non_member_dataset_path = "data_OLMo2_13b_1124/eval_data/raw_data/wiki_valid.npy"
