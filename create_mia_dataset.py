@@ -124,7 +124,9 @@ for x in seed_list:
         test_dataset = dataset["test"]
         if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}"):
             member_dataset = load_from_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
+                keep_in_memory=True
+            )
         else:
             random_indices = random.sample(range(len(member_dataset)),
                                            k=sample_num if sample_num < len(member_dataset) else len(
