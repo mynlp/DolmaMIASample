@@ -10,48 +10,92 @@ import argparse
 from dolma_sample_load import MemmapTokenDataset, collate_fn
 from torch.utils.data import DataLoader
 import gc
+import torch
+from torch.nn.utils.rnn import pad_sequence
 
-def filter_data(data, min_length, max_length, args, domain):
-    """批量过滤文本长度在给定Token数量范围的数据"""
-    filtered_data = []
+def filter_data(data, min_length, max_length, args, domain, pad_id=0):
+    """
+    针对预分词（token已数值化）的情况，
+    利用PyTorch张量在GPU上进行长度计算和切片加速。
+    """
+    # 选择字段（这里只针对code_search_net，其他情况请参考方法2）
     if domain == "code_search_net":
         key = "func_code_tokens"
-    elif domain in ["algebraic-stack", "open-web-math", "arxiv"]:
-        key = "text"
-    for i in tqdm(range(0, len(data[key]), args.batch_size)):
-        batch = data[key][i:i + args.batch_size]
-        if domain == "code_search_net":
-            # Here items are assumed to be token lists so we just count their length.
-            lengths = [len(item) for item in batch]
-        else:
-            # Tokenize each string once; we save the result so that we do splitting only one time per item.
-            tokenized_batch = [text.split() for text in batch]
-            lengths = [len(tokens) for tokens in tokenized_batch]
-        #pdb.set_trace()
-        if args.select_method == "nontruncate":
-            # Retain items only if their token count is in the desired range.
-            if domain == "code_search_net":
-                filtered_data.extend(
-                    [item for item, l in zip(batch, lengths) if min_length <= l <= max_length]
-                )
-            else:
-                filtered_data.extend(
-                    [" ".join(tokens) for tokens, l in zip(tokenized_batch, lengths)
-                     if min_length <= l <= max_length]
-                )
+    else:
+        raise ValueError("该方法仅适用于预分词的数值化数据")
 
+    filtered_data = []
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    for i in tqdm(range(0, len(data[key]), args.batch_size)):
+        batch = data[key][i: i + args.batch_size]
+        # 将每个序列转换为tensor，然后补齐
+        batch_tensors = [torch.tensor(item, dtype=torch.long) for item in batch]
+        padded = pad_sequence(batch_tensors, batch_first=True, padding_value=pad_id).to(device)
+        # 利用GPU计算每个序列的真实长度（假设pad_id为填充标志）
+        lengths = (padded != pad_id).sum(dim=1)
+
+        if args.select_method == "nontruncate":
+            # 生成一个布尔mask
+            mask = (lengths >= min_length) & (lengths <= max_length)
+            # 因为后面还需要回到CPU，用Python列表保存原始序列
+            for j, keep in enumerate(mask):
+                if keep:
+                    filtered_data.append(batch[j])
         elif args.select_method == "truncate" and args.relative_length == "False":
-            # Here we drop items that do not reach the minimum length.
-            if domain == "code_search_net":
-                filtered_data.extend(
-                    [" ".join(item[:max_length]) for item, l in zip(batch, lengths) if l >= min_length]
-                )
-            else:
-                filtered_data.extend(
-                    [" ".join(tokens[:max_length]) for tokens, l in zip(tokenized_batch, lengths) if l >= min_length]
-                )
-            # Remove or delay gc.collect() if not strictly necessary.
+            # 筛选长度>=min_length的数据，然后在GPU上进行截断
+            mask = (lengths >= min_length)
+            for j, keep in enumerate(mask):
+                if keep:
+                    # 若数据在GPU上，可直接利用张量切片；切片后转回CPU，再转换为列表
+                    truncated = padded[j, :max_length].cpu().tolist()
+                    filtered_data.append(truncated)
+        # 清理不用的GPU内存（视情况决定调用频率）
+        torch.cuda.empty_cache()
     return filtered_data
+
+#
+# def filter_data(data, min_length, max_length, args, domain):
+#     """批量过滤文本长度在给定Token数量范围的数据"""
+#     filtered_data = []
+#     if domain == "code_search_net":
+#         key = "func_code_tokens"
+#     elif domain in ["algebraic-stack", "open-web-math", "arxiv"]:
+#         key = "text"
+#     for i in tqdm(range(0, len(data[key]), args.batch_size)):
+#         batch = data[key][i:i + args.batch_size]
+#         if domain == "code_search_net":
+#             # Here items are assumed to be token lists so we just count their length.
+#             lengths = [len(item) for item in batch]
+#         else:
+#             # Tokenize each string once; we save the result so that we do splitting only one time per item.
+#             tokenized_batch = [text.split() for text in batch]
+#             lengths = [len(tokens) for tokens in tokenized_batch]
+#         #pdb.set_trace()
+#         if args.select_method == "nontruncate":
+#             # Retain items only if their token count is in the desired range.
+#             if domain == "code_search_net":
+#                 filtered_data.extend(
+#                     [item for item, l in zip(batch, lengths) if min_length <= l <= max_length]
+#                 )
+#             else:
+#                 filtered_data.extend(
+#                     [" ".join(tokens) for tokens, l in zip(tokenized_batch, lengths)
+#                      if min_length <= l <= max_length]
+#                 )
+#
+#         elif args.select_method == "truncate" and args.relative_length == "False":
+#             # Here we drop items that do not reach the minimum length.
+#             if domain == "code_search_net":
+#                 filtered_data.extend(
+#                     [" ".join(item[:max_length]) for item, l in zip(batch, lengths) if l >= min_length]
+#                 )
+#             else:
+#                 filtered_data.extend(
+#                     [" ".join(tokens[:max_length]) for tokens, l in zip(tokenized_batch, lengths) if l >= min_length]
+#                 )
+#             # Remove or delay gc.collect() if not strictly necessary.
+#     return filtered_data
 
 def load_and_filter_data(dataset, min_length, max_length, args, domain):
     """filtering and load"""
