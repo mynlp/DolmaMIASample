@@ -13,6 +13,7 @@ import gc
 import torch
 from torch.nn.utils.rnn import pad_sequence
 import time
+import pickle
 
 
 #
@@ -25,10 +26,10 @@ def filter_data(data, min_length, max_length, args, domain):
         key = "func_code_tokens"
     elif domain in ["algebraic-stack", "open-web-math", "arxiv"]:
         key = "text"
-    for i in tqdm(range(0, len(data[key]), args.batch_size)):
+    for i in tqdm(range(0, len(data), args.batch_size)):
         batch_start_time = time.perf_counter()
         t0 = time.perf_counter()
-        batch = data[key][i:i + args.batch_size]
+        batch = [x[key] for x in data[i:i + args.batch_size]]
         batch_read_time = time.perf_counter() - t0
         t2 = time.perf_counter()
         if domain == "code_search_net":
@@ -160,26 +161,27 @@ for x in seed_list:
         member_dataset = dataset["train"]
         valid_dataset = dataset["validation"]
         test_dataset = dataset["test"]
-        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}"):
-            member_dataset = load_from_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
-                keep_in_memory=True
-            )
+        non_member_dataset = concatenate_datasets([valid_dataset, test_dataset])
+
+        if os.path.exists(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl"):
+            # member_dataset = load_from_disk(
+            #     f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
+            #     keep_in_memory=True
+            # )
+            member_dataset = pickle.load(open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl", "rb"))
         else:
             random_indices = random.sample(range(len(member_dataset)),
                                            k=sample_num if sample_num < len(member_dataset) else len(
                                                member_dataset))
-            member_dataset = member_dataset.select(random_indices)
+            member_dataset = list(member_dataset.select(random_indices))
             os.makedirs(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}",
                         exist_ok=True)
-            member_dataset.save_to_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
-            member_dataset = load_from_disk(
-                f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}")
+            pickle.dump(member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl", "wb"))
+            #pickle.dump(member_dataset, open(f"{prefix}/dolma_absolute_filtered_dataset_{idx + 1}/{args.domain}/raw_data/{seed}.pkl", "wb"))
+            #dump pickle member dataset
             # merge valid and test
         validation_sampled = valid_dataset
         test_sampled = test_dataset
-        non_member_dataset = concatenate_datasets([validation_sampled, test_sampled])
     elif args.domain == "dolma wiki":
         member_dataset_path = "data_OLMo2_13b_1124/train_data/raw_data/wiki_train.npy"
         non_member_dataset_path = "data_OLMo2_13b_1124/eval_data/raw_data/wiki_valid.npy"
