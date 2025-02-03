@@ -31,7 +31,10 @@ def filter_data(data, min_length, max_length, args, domain):
             filtered_data.extend([batch[j] for j in range(len(batch)) if valid_indices[j]])
         elif args.select_method == "truncate" and args.relative_length == "False":
             valid_indices = (np.array(lengths) >= min_length)
-            filtered_data.extend([" ".join(batch[j].split()[:max_length]) for j in range(len(batch)) if valid_indices[j]])
+            if domain == "code_search_net":
+                filtered_data.extend([" ".join(batch[j][:max_length]) for j in range(len(batch)) if valid_indices[j]])
+            else:
+                filtered_data.extend([" ".join(batch[j].split()[:max_length]) for j in range(len(batch)) if valid_indices[j]])
         gc.collect()
     return filtered_data
 
