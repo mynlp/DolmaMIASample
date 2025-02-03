@@ -50,9 +50,7 @@ def filter_data(data, min_length, max_length, args, domain):
                 filtered_data.extend(
                     [" ".join(tokens[:max_length]) for tokens, l in zip(tokenized_batch, lengths) if l >= min_length]
                 )
-
             # Remove or delay gc.collect() if not strictly necessary.
-        gc.collect()
     return filtered_data
 
 def load_and_filter_data(dataset, min_length, max_length, args, domain):
