@@ -43,7 +43,7 @@ def filter_data(data, min_length, max_length, args, domain):
         #pdb.set_trace()
         t4 = time.perf_counter()
         lengths = torch.tensor(lengths, device=device)
-        if args.select_method == "nontruncated":
+        if args.select_method == "untruncated":
             # Retain items only if their token count is in the desired range.
             indicator = lengths >= min_length and lengths <= max_length
             if domain == "code_search_net":
