@@ -2,7 +2,7 @@
 import os
 import shutil
 
-def reorganize_dataset(src_dir, dest_dir, skip_intervals=None):
+def reorganize_dataset(src_dir, dest_dir, skip_intervals=None, truncate="_untruncated"):
     """
     将原始数据按照 domain 分组重组成：
       目标目录 dest_dir 下首先按 domain 分类，
@@ -25,12 +25,12 @@ def reorganize_dataset(src_dir, dest_dir, skip_intervals=None):
         if not os.path.isdir(truncated_path):
             continue  # 仅处理文件夹
 
-        if not truncated_folder.endswith("_truncated"):
-            print(f"跳过非 _truncated 文件夹：{truncated_folder}")
+        if not truncated_folder.endswith(truncate):
+            print(f"跳过非 `{truncate}` 文件夹：{truncated_folder}")
             continue
 
         # 通过去除后缀得到区间名称
-        interval_name = truncated_folder[:-len("_truncated")]
+        interval_name = truncated_folder[:-len(truncate)]
         if interval_name in skip_intervals:
             print(f"跳过区间：{interval_name}")
             continue
@@ -58,9 +58,9 @@ def reorganize_dataset(src_dir, dest_dir, skip_intervals=None):
 
 if __name__ == "__main__":
     # 设定源数据文件夹，本示例要求该文件夹与脚本处于同一目录，必要时请调整路径
-    source_directory = "/NAS/Personal/bwchen/Dolmad_ata/dolma_absolute_filtered_dataset_3"
+    source_directory = "/NAS/Personal/bwchen/Dolmad_ata/dolma_absolute_filtered_dataset_1"
     # 指定重组后数据存放的目标文件夹
-    destination_directory = "/home/bwchen/DolmaMIASample/dolma_dataset_truncated_3"
+    destination_directory = "/home/bwchen/DolmaMIASample/dolma_dataset_untruncated_1"
     # 若你需要跳过某某区间，在此处列出即可；这里设为空列表，表示不跳过任何区间，包括 200_300
     skip_intervals = []
 
